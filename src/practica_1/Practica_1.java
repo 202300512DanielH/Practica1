@@ -17,8 +17,8 @@ public class Practica_1 {
         int columna=8;
         boolean[][] tablaCompara = casillasConCastigo(fila,columna);
         int EleccionMenu=menu();
-        String[][] tabla;
-        int posicionJugador =0;
+        String[][] tabla = new String[fila][columna];
+        int posicionJugador =1;
         String[][] tablaMatrizR;
         
         
@@ -46,8 +46,9 @@ public class Practica_1 {
                 EleccionMenu=menu();
             }
             if(EleccionMenu==1){
+                tabla=modificarTabla(posicionJugador,tablaCompara,tabla);
 
-                tabla=crearTabla( fila, columna,posicionJugador,tablaCompara); 
+
                 imprimirTabla(tabla);
                 
                 String tirarDado;
@@ -55,9 +56,12 @@ public class Practica_1 {
                 while(ciclo){
                     System.out.println("Presiona 'd' para tirar el dado o 'p' para poner pausa ");
                     tirarDado= scanner.nextLine();
+
                     if(tirarDado.equalsIgnoreCase("d")){
+
                         posicionJugador=posicionJugador+dado();
-                        tabla=crearTabla( fila, columna,posicionJugador,tablaCompara); 
+                        tabla=modificarTabla(posicionJugador,tablaCompara,tabla);
+
                         imprimirTabla(tabla);
                         if(posicionJugador>64){
                             System.out.println("\nFIN DEL JUEGO\nHAZ GANADO\n");
@@ -139,17 +143,20 @@ public class Practica_1 {
 		return opcion;
 	}
 
+
+
     
     
     
     
-    
-    public static String[][] crearTabla(int fila, int columna, int posicionJugador, boolean[][] tablaCompara){
+    public static String[][] modificarTabla( int posicionJugador, boolean[][] tablaCompara, String[][] tabla){
+        int fila=tabla.length;
+        int columna=tabla[0].length;
         int[][] coordenadas=coordenadasJugador(posicionJugador, fila,columna);
         int x= coordenadas[0][1];
         int y= coordenadas[0][0];
         
-        String[][] tabla = new String[fila][columna];
+
 
         // Llenar la tabla con números secuenciales del 1 al 64
         int contador = 1;
@@ -164,11 +171,11 @@ public class Practica_1 {
                     boolean castigo=tablaCompara[i][j];
   
                     if(j==x && y==i){
-                         texto= jugador(contador,castigo,true);
+                         texto= jugador(contador,castigo,true, tabla);
                         
                     }
                     else{
-                        texto= jugador(contador,castigo,false);   
+                        texto= jugador(contador,castigo,false, tabla);
                     }
                     
                     tabla[i][j] = texto;
@@ -179,10 +186,10 @@ public class Practica_1 {
                 for (int j = 0; j <columna; j++) {
                     boolean castigo=tablaCompara[i][j];
                     if(j==x && y==i){
-                         texto= jugador(contador,castigo,true);      
+                         texto= jugador(contador,castigo,true, tabla);
                     }
                     else{
-                         texto= jugador(contador,castigo,false);
+                         texto= jugador(contador,castigo,false, tabla);
                     }
                     
                     tabla[i][j] = texto;
@@ -195,11 +202,13 @@ public class Practica_1 {
       return tabla;  
     }
     
-    public static String jugador(int correlativo, boolean penalizacion, boolean estar ){
+    public static String jugador(int correlativo, boolean penalizacion, boolean estar, String[][] tabla ){
         String casilla="";   
         if (penalizacion && estar) {
             casilla += "# " + Integer.toString(correlativo) + " @";
+
             System.out.print("\nHaz Caido en una Penalizacion\n");
+            imprimirTabla(tabla);
             mostrarPenalizaciones();
                
             
